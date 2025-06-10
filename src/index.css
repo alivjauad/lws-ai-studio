@@ -1,0 +1,30 @@
+@import "tailwindcss";
+@theme {
+  --font-satoshi: Satoshi, sans-serif;
+  --color-shop-black: #000000;
+  --color-shop-red: #ff3333;
+}
+body {
+  font-family: "Satoshi", sans-serif;
+  /* background: linear-gradient(135deg, #0f0f0f 0%, #1a0b2e 100%); */
+  min-height: 100vh;
+  color: white;
+}
+
+.search-input:focus {
+  outline: none;
+}
+
+@keyframes flipping-18i5bq {
+  0% {
+    transform: perspective(67.2px) rotateX(-90deg);
+  }
+  50%,
+  75% {
+    transform: perspective(67.2px) rotateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: perspective(67.2px) rotateX(0);
+  }
+}
