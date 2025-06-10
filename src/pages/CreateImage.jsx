@@ -40,7 +40,7 @@ const CreateImage = memo(() => {
       {/* Search Bar */}
       <Search />
 
-      {/* AAdvanced Section */}
+      {/* Advanced Section */}
 
       <Options />
 
