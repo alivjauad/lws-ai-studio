@@ -11,9 +11,8 @@ let options = {
   safe: true,
 };
 
-// *Provider
 const AppContextProvider = ({ children }) => {
-  // States
+  // *States
   const [activeMenu, setActiveMenu] = useState("createImage");
 
   const [settings, setSettings] = useState(options);
@@ -26,6 +25,10 @@ const AppContextProvider = ({ children }) => {
 
   const [query, setQuery] = useState("");
 
+  const [aborted, setAborted] = useState(false);
+
+  const [loadingSearch, setLoadingSearch] = useState(false);
+
   const [downloadedImages, setDownloadedImages] = useState(() => {
     try {
       const fromStorage = localStorage.getItem("downloadedImages");
@@ -34,10 +37,6 @@ const AppContextProvider = ({ children }) => {
       return [];
     }
   });
-  const [aborted, setAborted] = useState(false);
-  const [loadingSearch, setLoadingSearch] = useState(false);
-
-  console.log(downloadedImages);
 
   return (
     <AppContext.Provider

@@ -5,6 +5,7 @@ import Glow from "../Glow";
 import Header from "../Header";
 
 const AppLayout = () => {
+  // *Hooks
   const { activeMenu } = useAppContext();
 
   return (

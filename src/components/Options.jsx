@@ -7,16 +7,14 @@ import Input from "./ui/Input";
 import Select from "./ui/Select";
 
 const Options = memo(() => {
-  // Local States
+  //* Local States
   const [loadingModels, setLoadingModels] = useState(false);
   const [inputErrors, setInputErrors] = useState({});
   const [modelFetchError, setModelFetchError] = useState("");
   const [model, setModel] = useState([]);
 
-  // Hooks
+  // *Hooks
   const { settings, setSettings, setSearchError } = useAppContext();
-
-  console.log(settings);
 
   // *Handlers
 

@@ -14,10 +14,10 @@ const variants = {
 const Gallery = ({ variant, images = [] }) => {
   const classes = `${variants[variant]}`;
 
-  // Hooks
+  // *Hooks
   const { setImages, query, settings, setDownloadedImages } = useAppContext();
 
-  // Handlers
+  // *Handlers
   const handleRetry = async (idx) => {
     const { seed } = images[idx];
     setImages((prev) =>

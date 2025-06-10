@@ -9,11 +9,11 @@ import Input from "./ui/Input";
 import SearchLoader from "./ui/SearchLoader";
 
 const Search = memo(() => {
-  // Ref
+  // *Refs
   const abortedRef = useRef(false);
   const abortControllerRef = useRef(null);
 
-  // Hooks
+  // *Hooks
   const {
     settings,
     setImages,
@@ -26,7 +26,7 @@ const Search = memo(() => {
     setLoadingSearch,
   } = useAppContext();
 
-  // Handlers
+  // *Handlers
 
   const handleSearch = (e) => {
     setQuery(e.target.value);
@@ -54,7 +54,7 @@ const Search = memo(() => {
         }))
       );
 
-      // Call Fetch Here
+      // Loop 9 times and Fetch Images
       for (let idx = 0; idx < seeds.length; idx++) {
         if (abortedRef.current) break;
         await fetchOneImage(seeds[idx], idx, abortControllerRef.current.signal);
@@ -96,50 +96,6 @@ const Search = memo(() => {
       )
     );
   };
-
-  // Fetch
-  /*   const fetchOneImage = async (seed, idx,) => {
-    const url = getFetchUrl(query, { ...settings, seed });
-
-    try {
-      // Check query is empty
-      if (query == "" || query == null) {
-        throw new Error("Query can not be empty");
-      }
-      const response = await fetchWithTimeout(url, 60000);
-
-      console.log("Response No: " + idx, "Seed: " + seed);
-      console.log(response);
-
-      if (!response.ok) throw new Error("Failed to generate image");
-
-      // If aborted, do NOT update state
-      if (abortedRef.current) return;
-
-      // For Pollinations, response.url is usually the image
-      setImages((prev) =>
-        prev.map((img, i) =>
-          i === idx
-            ? { ...img, url: response.url, loading: false, error: null }
-            : img
-        )
-      );
-    } catch (err) {
-      if (abortedRef.current) return;
-      setImages((prev) =>
-        prev.map((img, i) =>
-          i === idx
-            ? { ...img, url: null, loading: false, error: err.message }
-            : img
-        )
-      );
-      // Print Error and Update Error State
-      // setSearchError(err.message);
-    } finally {
-      // Clear Loading State
-      // setLoadingSearch(false);
-    }
-  }; */
 
   const fetchOneImage = async (seed, idx, signal) => {
     const url = getFetchUrl(query, { ...settings, seed });
@@ -225,10 +181,6 @@ const Search = memo(() => {
           )}
         </div>
       </div>
-      {/* Show API Error */}
-      {/*   {searchError && (
-        <p className="text-red-300 text-md mt-2">{searchError}</p>
-      )} */}
     </div>
   );
 });

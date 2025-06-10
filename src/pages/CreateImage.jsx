@@ -5,7 +5,7 @@ import Search from "../components/Search";
 import useAppContext from "../hooks/useAppContext";
 
 const CreateImage = memo(() => {
-  // Hooks
+  //* Hooks
   const {
     setAborted,
     setLoadingImage,
@@ -13,18 +13,14 @@ const CreateImage = memo(() => {
     images,
     setImages,
     setSearchError,
-    // ...any other relevant setters
   } = useAppContext();
 
   useEffect(() => {
-    // This function runs when the component is UNMOUNTED
     return () => {
-      // Abort any ongoing generation and reset states
       setAborted(true);
       setLoadingImage(false);
       setLoadingSearch(false);
       setSearchError("");
-      // Optionally: clear image results (if you want fresh results on new entry)
       setImages([]);
     };
   }, [
@@ -32,7 +28,7 @@ const CreateImage = memo(() => {
     setLoadingImage,
     setLoadingSearch,
     setSearchError,
-    setImages, // Uncomment if you want to clear images
+    setImages,
   ]);
 
   return (
@@ -43,10 +39,8 @@ const CreateImage = memo(() => {
 
       {/* Search Bar */}
       <Search />
-      {/* <InputLoader /> */}
-      {/* <SearchLoader /> */}
 
-      {/* ADVANCED SECTION */}
+      {/* AAdvanced Section */}
 
       <Options />
 

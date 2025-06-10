@@ -2,6 +2,7 @@ import Gallery from "../components/Gallery";
 import useAppContext from "../hooks/useAppContext";
 
 const Downloaded = () => {
+  // *Hooks
   const { downloadedImages } = useAppContext();
   return (
     <div>
@@ -12,7 +13,7 @@ const Downloaded = () => {
         <Gallery
           variant="secondary"
           images={downloadedImages}
-          showDownload={false} // Optional: Hide download icon
+          showDownload={false}
         />
       ) : (
         <p className="text-zinc-400 text-lg">No downloaded images yet.</p>
