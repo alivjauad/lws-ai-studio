@@ -1,6 +1,6 @@
-import { memo, useRef, useState } from "react";
+import { memo, useRef } from "react";
 import useAppContext from "../hooks/useAppContext";
-import { fetchWithTimeout, generateSeeds, getFetchUrl } from "../utils";
+import { generateSeeds, getFetchUrl } from "../utils";
 import ArrowIcon from "./svgs/ArrowIcon";
 import SearchIcon from "./svgs/SearchIcon";
 import StopIcon from "./svgs/StopIcon";
@@ -8,28 +8,28 @@ import Button from "./ui/Button";
 import Input from "./ui/Input";
 import SearchLoader from "./ui/SearchLoader";
 
-// const url = "https://image.pollinations.ai/query/"
-
 const Search = memo(() => {
-  // Local States
-
-  const [loadingSearch, setLoadingSearch] = useState(false);
-  const [aborted, setAborted] = useState(false);
-
-  // console.log(query);
-
   // Ref
   const abortedRef = useRef(false);
+  const abortControllerRef = useRef(null);
 
   // Hooks
-  const { settings, setImages, setLoadingImage, query, setQuery } =
-    useAppContext();
+  const {
+    settings,
+    setImages,
+    setLoadingImage,
+    query,
+    setQuery,
+    aborted,
+    setAborted,
+    loadingSearch,
+    setLoadingSearch,
+  } = useAppContext();
 
   // Handlers
 
   const handleSearch = (e) => {
     setQuery(e.target.value);
-    // setSearchError("");
   };
 
   const handleCreateImages = async (event) => {
@@ -41,7 +41,7 @@ const Search = memo(() => {
       setLoadingImage(true);
       setAborted(false);
       abortedRef.current = false;
-
+      abortControllerRef.current = new AbortController();
       const seeds = generateSeeds(9);
 
       setImages(
@@ -57,9 +57,9 @@ const Search = memo(() => {
       // Call Fetch Here
       for (let idx = 0; idx < seeds.length; idx++) {
         if (abortedRef.current) break;
-        await fetchOneImage(seeds[idx], idx);
+        await fetchOneImage(seeds[idx], idx, abortControllerRef.current.signal);
         if (idx < seeds.length - 1) {
-          // Wait 5 seconds before next LOOP
+          // Wait 6 seconds between requests (rate limit)
           await new Promise((resolve) => setTimeout(resolve, 6000));
         }
       }
@@ -81,12 +81,24 @@ const Search = memo(() => {
 
   const handleAbort = () => {
     setAborted(true);
+    setLoadingSearch(false);
     abortedRef.current = true;
     setLoadingImage(false);
+    abortedRef.current = true;
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    setImages((prev) =>
+      prev.map((img) =>
+        img.loading
+          ? { ...img, loading: false, error: "Generation stopped." }
+          : img
+      )
+    );
   };
 
   // Fetch
-  const fetchOneImage = async (seed, idx) => {
+  /*   const fetchOneImage = async (seed, idx,) => {
     const url = getFetchUrl(query, { ...settings, seed });
 
     try {
@@ -126,6 +138,38 @@ const Search = memo(() => {
     } finally {
       // Clear Loading State
       // setLoadingSearch(false);
+    }
+  }; */
+
+  const fetchOneImage = async (seed, idx, signal) => {
+    const url = getFetchUrl(query, { ...settings, seed });
+
+    try {
+      if (!query || query.trim() === "") {
+        throw new Error("Query cannot be empty");
+      }
+      const response = await fetch(url, { signal }); // pass abort signal!
+      if (!response.ok) throw new Error("Failed to generate image");
+
+      // If aborted, don't update state
+      if (abortedRef.current) return;
+
+      setImages((prev) =>
+        prev.map((img, i) =>
+          i === idx
+            ? { ...img, url: response.url, loading: false, error: null }
+            : img
+        )
+      );
+    } catch (err) {
+      if (err.name === "AbortError" || abortedRef.current) return;
+      setImages((prev) =>
+        prev.map((img, i) =>
+          i === idx
+            ? { ...img, url: null, loading: false, error: err.message }
+            : img
+        )
+      );
     }
   };
 

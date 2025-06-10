@@ -89,23 +89,36 @@ const Gallery = ({ variant, images = [] }) => {
     <div className={classes}>
       {images.map((img, idx) => (
         <div
-          className="image-card rounded-xl overflow-hidden cursor-pointer relative"
+          className="image-card rounded-xl overflow-hidden cursor-pointer relative h-48"
           key={img.id}
         >
-          {img.loading && <ImageLoader />}
-          {img.error && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center w-full h-full">
-              <span className="text-red-400 text-sm mb-2">{img.error}</span>
-              <Button variant={"retry"} onClick={() => handleRetry(idx)}>
-                Retry
-              </Button>
+          {/* If loading, show loader */}
+          {img.loading && (
+            <div className="absolute inset-0 flex items-center justify-center w-full h-full bg-black/30">
+              <ImageLoader />
             </div>
           )}
+
+          {/* If there is an error, show error text.
+            Only show Retry button if NOT a user abort */}
+          {img.error && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center w-full h-full bg-black/40">
+              <span className="text-red-400 text-sm mb-2">{img.error}</span>
+              {img.error !== "Generation stopped." && (
+                <Button variant={"retry"} onClick={() => handleRetry(idx)}>
+                  Retry
+                </Button>
+              )}
+            </div>
+          )}
+
+          {/* Show the image with download button if loaded */}
           {!img.loading && !img.error && img.url && (
             <>
               <button
                 className="absolute bottom-2 right-2 p-1 cursor-pointer"
                 onClick={() => handleDownload(img)}
+                title="Download"
               >
                 <DownloadIcon />
               </button>

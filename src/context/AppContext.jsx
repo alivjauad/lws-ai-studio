@@ -34,6 +34,8 @@ const AppContextProvider = ({ children }) => {
       return [];
     }
   });
+  const [aborted, setAborted] = useState(false);
+  const [loadingSearch, setLoadingSearch] = useState(false);
 
   console.log(downloadedImages);
 
@@ -54,6 +56,10 @@ const AppContextProvider = ({ children }) => {
         setQuery,
         downloadedImages,
         setDownloadedImages,
+        aborted,
+        setAborted,
+        loadingSearch,
+        setLoadingSearch,
       }}
     >
       {children}
